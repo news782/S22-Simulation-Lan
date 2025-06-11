@@ -32,9 +32,9 @@ void creer_trame_ethernet(
 void afficher_trame_utilisateur(const ethernet_frame_t *trame) {
     printf("Trame Ethernet :\n");
     printf("  Destination : ");
-    afficher_mac(trame->dest);
+    afficher_mac(&trame->dest);
     printf("\n  Source      : ");
-    afficher_mac(trame->src);
+    afficher_mac(&trame->src);
     printf("\n  Type        : 0x%04x\n", trame->type);
     printf("  Data length : %d octets\n", trame->data_len);
     printf("  Data        : ");
@@ -61,3 +61,4 @@ void afficher_trame_hex(const ethernet_frame_t *trame) {
         (trame->fcs >> 8) & 0xFF,
         trame->fcs & 0xFF);
 }
+
