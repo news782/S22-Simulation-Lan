@@ -1,26 +1,23 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
-OBJ = main.o network_structures.o network_display.o network_config.o ethernet_frame.o switch_logic.o
 
-# Cible principale
-all: main
+# Liste des fichiers source
+SRCS = main.c network_structures.c ethernet_frame.c switch_logic.c stp.c network_config.c network_display.c
+OBJS = $(SRCS:.c=.o)
 
-main: $(OBJ)
-	$(CC) $(CFLAGS) -o main $(OBJ)
+# Nom de ton exécutable
+EXEC = simulateur_reseau
 
-main.o: main.c network_structures.h network_display.h network_config.h
+all: $(EXEC)
 
-network_structures.o: network_structures.c network_structures.h
+$(EXEC): $(OBJS)
+	$(CC) $(CFLAGS) -o $(EXEC) $(OBJS)
 
-network_display.o: network_display.c network_display.h network_structures.h
-
-network_config.o: network_config.c network_config.h network_structures.h
-
-ethernet_frame.o: ethernet_frame.c ethernet_frame.h network_structures.h
-
-switch_logic.o: switch_logic.c switch_logic.h network_structures.h ethernet_frame.h
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o main
+	rm -f $(OBJS) $(EXEC)
 
+	
 .PHONY: all clean

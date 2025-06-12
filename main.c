@@ -3,6 +3,7 @@
 #include "network_config.h"
 #include "ethernet_frame.h"
 #include "switch_logic.h"
+#include "stp.h"
 #include <stdio.h>
 
 #define NB_MAX_EQUIPEMENTS 64
@@ -103,7 +104,7 @@ void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
+     if (argc < 2) {
         printf("Usage: %s <fichier_config>\n", argv[0]);
         return 1;
     }
@@ -112,6 +113,10 @@ int main(int argc, char *argv[]) {
         printf("Erreur lors du chargement du fichier\n");
         return 1;
     }
+
+    // Calcul du spanning tree avant de lancer la simulation
+    stp_calculer_spanning_tree(&reseau);
+    stp_afficher_etat_ports(&reseau);
 
     int idx_src = 14; // station source
     int idx_dest = 7; // station destination

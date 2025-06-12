@@ -28,6 +28,7 @@ typedef struct {
     int priority;
     mac_addr_t mac_table[MAX_PORTS];
     int port_table[MAX_PORTS]; // index du voisin
+    int port_etat[MAX_PORTS];  // 1 = actif (spanning tree), 0 = bloqué
     int mac_table_size;
 } switch_t;
 
