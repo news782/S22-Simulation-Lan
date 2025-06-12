@@ -36,7 +36,7 @@ int stp_trouver_root(reseau_t *reseau) {
     return idx_root;
 }
 
-// BFS (Parcours en largeur) pour calculer la distance au root et mémoriser le port root pour chaque switch
+// BFS pour calculer la distance au root et mémoriser le port root pour chaque switch
 void stp_calculer_spanning_tree(reseau_t *reseau) {
     int i, j;
     int root = stp_trouver_root(reseau);
@@ -114,7 +114,7 @@ void stp_calculer_spanning_tree(reseau_t *reseau) {
                 if (sw->port_table[j] == b) sw->port_etat[j] = 1;
             }
         } else if (db < da) {
-            // b est designaté bridge pour ce lien
+            // b est designated bridge pour ce lien
             switch_t *sw = &reseau->equipements[b].data.sw;
             for (j = 0; j < MAX_PORTS; j++) {
                 if (sw->port_table[j] == a) sw->port_etat[j] = 1;
