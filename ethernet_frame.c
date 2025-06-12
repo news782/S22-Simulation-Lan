@@ -45,14 +45,6 @@ void afficher_trame_utilisateur(const ethernet_frame_t *trame) {
     printf("\n  FCS         : 0x%08x\n", trame->fcs);
 }
 
-// Affiche une MAC au format standard
-void afficher_mac(mac_addr_t mac) {
-    int i;
-    for (i = 0; i < MAC_ADDR_LEN; i++) {
-        printf("%02x", mac.addr[i]);
-        if (i < MAC_ADDR_LEN-1) printf(":");
-    }
-}
 
 // Affiche la trame en hexadécimal (brut)
 void afficher_trame_hex(const ethernet_frame_t *trame) {
