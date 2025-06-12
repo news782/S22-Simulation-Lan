@@ -165,8 +165,8 @@ int main(int argc, char *argv[]) {
     afficher_trame_hex(&trame);
 
     printf("\n--- Test Simulation ---\n");
-    int idx_src = trouver_station_par_ip(&reseau, reseau.equipements[7].data.station.ip);
-    int idx_dest = trouver_station_par_ip(&reseau, reseau.equipements[8].data.station.ip);
+    int idx_src = trouver_station_par_ip(&reseau, reseau.equipements[14].data.station.ip);
+    int idx_dest = trouver_station_par_ip(&reseau, reseau.equipements[7].data.station.ip);
     simuler_trame_station(&reseau, idx_src, idx_dest);
 
 
