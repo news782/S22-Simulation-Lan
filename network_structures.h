@@ -26,9 +26,8 @@ typedef struct {
     mac_addr_t mac;
     int nb_ports;
     int priority;
-    // Table d’association MAC -> index de l’équipement voisin dans le graphe
     mac_addr_t mac_table[MAX_PORTS];
-    int port_table[MAX_PORTS]; // contient l’index de l’équipement voisin
+    int port_table[MAX_PORTS]; // index du voisin
     int mac_table_size;
 } switch_t;
 
@@ -54,5 +53,9 @@ typedef struct {
     int nb_liens;
     lien_t liens[128];
 } reseau_t;
+
+// Fonctions simples de comparaison
+int mac_egal(mac_addr_t m1, mac_addr_t m2);
+int ip_egal(ip_addr_t ip1, ip_addr_t ip2);
 
 #endif

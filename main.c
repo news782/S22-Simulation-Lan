@@ -4,22 +4,22 @@
 #include "ethernet_frame.h"
 #include "switch_logic.h"
 #include <stdio.h>
-#include <string.h>
 
 #define NB_MAX_EQUIPEMENTS 64
 
 // Recherche d'une station par IP
 int trouver_station_par_ip(reseau_t *reseau, ip_addr_t ip) {
-    for (int i = 0; i < reseau->nb_equipements; i++) {
+    int i;
+    for (i = 0; i < reseau->nb_equipements; i++) {
         if (reseau->equipements[i].type == STATION &&
-            memcmp(reseau->equipements[i].data.station.ip.addr, ip.addr, IP_ADDR_LEN) == 0) {
+            ip_egal(reseau->equipements[i].data.station.ip, ip)) {
             return i;
         }
     }
     return -1;
 }
 
-// Propagation de la trame avec liste des noeuds déjà visités
+// Propagation de la trame avec anti-boucle simple
 int propager_trame(
     reseau_t *reseau,
     int courant,
@@ -32,7 +32,7 @@ int propager_trame(
 ) {
     if (profondeur > reseau->nb_equipements) return 0;
     if (*trouve) return 1;
-    if (visited[courant]) return 0; // déjà passé ici pour cette trame, on ne recommence pas
+    if (visited[courant]) return 0;
     visited[courant] = 1;
 
     if (courant == dest_station) {
@@ -44,9 +44,7 @@ int propager_trame(
     equipement_t *eq = &reseau->equipements[courant];
     if (eq->type == SWITCH) {
         switch_t *sw = &eq->data.sw;
-        // Apprentissage MAC source : associer la MAC source au port d'arrivée (voisin precedent)
         if (precedent != -1) {
-            // On n'apprend QUE si la MAC n'est pas déjà connue, ou si elle l'est mais sur un autre port
             int port_enregistre = switch_rechercher_port(sw, trame->src);
             if (port_enregistre == -1) {
                 printf("Switch %d apprend MAC source : ", courant);
@@ -58,14 +56,13 @@ int propager_trame(
 
         int port_equip = switch_rechercher_port(sw, trame->dest);
         if (port_equip != -1 && port_equip != precedent) {
-            // MAC destination connue, envoie UNIQUEMENT sur ce port
             printf("Switch %d : MAC destination connue, envoie vers équipement %d\n", courant, port_equip);
             propager_trame(reseau, port_equip, courant, trame, dest_station, trouve, profondeur+1, visited);
             return 1;
         } else {
-            // MAC destination inconnue, inonde tous les ports sauf le port d'entrée
             printf("Switch %d : MAC destination inconnue, inonde tous les ports\n", courant);
-            for (int i = 0; i < reseau->nb_liens; i++) {
+            int i;
+            for (i = 0; i < reseau->nb_liens; i++) {
                 int e1 = reseau->liens[i].equip1, e2 = reseau->liens[i].equip2;
                 int voisin = (e1 == courant) ? e2 : (e2 == courant ? e1 : -1);
                 if (voisin != -1 && voisin != precedent) {
@@ -78,6 +75,7 @@ int propager_trame(
     return 0;
 }
 
+// Simulation d'une trame entre deux stations
 void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
     printf("\n--- Simulation d'une trame de la station %d vers la station %d ---\n", idx_src, idx_dest);
 
@@ -90,7 +88,8 @@ void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
 
     int trouve = 0;
     int visited[NB_MAX_EQUIPEMENTS] = {0};
-    for (int i = 0; i < reseau->nb_liens; i++) {
+    int i;
+    for (i = 0; i < reseau->nb_liens; i++) {
         int e1 = reseau->liens[i].equip1, e2 = reseau->liens[i].equip2;
         int voisin = (e1 == idx_src) ? e2 : (e2 == idx_src ? e1 : -1);
         if (voisin != -1) {
@@ -114,20 +113,26 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // 1. Trame station14 -> station7 (apprend la MAC de station14)
-    simuler_trame_station(&reseau, 14, 7);
+    int idx_src = 14; // station source
+    int idx_dest = 7; // station destination
 
-    // 2. Trame station7 -> station14 (apprend la MAC de station7)
-    simuler_trame_station(&reseau, 7, 14);
-
-    // 3. Trame station14 -> station7 (maintenant, plus d’inondation si tout est correct)
-    simuler_trame_station(&reseau, 14, 7);
-
-    // Affiche la table MAC de chaque switch
-    for (int i = 0; i < reseau.nb_equipements; i++) {
+    simuler_trame_station(&reseau, idx_src, idx_dest);
+    printf("\n=== TABLES MAC APRÈS 1ère TRAME ===\n");
+    int i;
+    for (i = 0; i < reseau.nb_equipements; i++) {
         if (reseau.equipements[i].type == SWITCH) {
-            printf("\nSwitch %d :\n", i);
+            printf("\nSwitch %d :\n", i);
             afficher_table_mac(&reseau.equipements[i].data.sw);
         }
     }
+    simuler_trame_station(&reseau, idx_dest, idx_src);
+    printf("\n=== TABLES MAC APRÈS 2ème TRAME ===\n");
+    for (i = 0; i < reseau.nb_equipements; i++) {
+        if (reseau.equipements[i].type == SWITCH) {
+            printf("\nSwitch %d :\n", i);
+            afficher_table_mac(&reseau.equipements[i].data.sw);
+        }
+    }
+    simuler_trame_station(&reseau, idx_src, idx_dest);
+    return 0;
 }
