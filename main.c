@@ -54,25 +54,25 @@ void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
 
 int main(int argc, char *argv[]) {
     // Exemple de station
-    station_t s1 = {
-        .mac = {{0x54, 0xd6, 0xa6, 0x82, 0xc5, 0x23}},
-        .ip = {{130, 79, 80, 21}}
-    };
-    equipement_t eq1 = {.type = STATION, .data.station = s1};
+    // station_t s1 = {
+    //     .mac = {{0x54, 0xd6, 0xa6, 0x82, 0xc5, 0x23}},
+    //     .ip = {{130, 79, 80, 21}}
+    // };
+    // equipement_t eq1 = {.type = STATION, .data.station = s1};
 
-    // Exemple de switch
-    switch_t sw1 = {
-        .mac = {{0x01, 0x45, 0x23, 0xa6, 0xf7, 0xab}},
-        .nb_ports = 8,
-        .priority = 1024
-    };
-    equipement_t eq2 = {.type = SWITCH, .data.sw = sw1};
+    // // Exemple de switch
+    // switch_t sw1 = {
+    //     .mac = {{0x01, 0x45, 0x23, 0xa6, 0xf7, 0xab}},
+    //     .nb_ports = 8,
+    //     .priority = 1024
+    // };
+    // equipement_t eq2 = {.type = SWITCH, .data.sw = sw1};
 
-    printf("Affichage Equipement 1:\n");
-    afficher_equipement(eq1);
+    // printf("Affichage Equipement 1:\n");
+    // afficher_equipement(eq1);
 
-    printf("Affichage Equipement 2:\n");
-    afficher_equipement(eq2);
+    // printf("Affichage Equipement 2:\n");
+    // afficher_equipement(eq2);
     
     if (argc < 2) {
         printf("Usage: %s <fichier_config>\n", argv[0]);
@@ -108,13 +108,18 @@ int main(int argc, char *argv[]) {
         sizeof(data)
     );
 
-    printf("\n--- Test Trame Ethernet ---\n");
-    afficher_trame_utilisateur(&trame);
-    afficher_trame_hex(&trame);
+    // printf("\n--- Test Trame Ethernet ---\n");
+    // afficher_trame_utilisateur(&trame);
+    // afficher_trame_hex(&trame);
 
-    printf("\n--- Test Simulation ---\n");
-    int idx_src = trouver_station_par_ip(&reseau, reseau.equipements[7].data.station.ip);
-    int idx_dest = trouver_station_par_ip(&reseau, reseau.equipements[8].data.station.ip);
+    //printf("\n--- Test Simulation ---\n");
+    int idx_src = trouver_station_par_ip(&reseau, reseau.equipements[14].data.station.ip);
+    int idx_dest = trouver_station_par_ip(&reseau, reseau.equipements[7].data.station.ip);
+
+    printf("\n---Envoie d'une 1ère tram de la station 14 vers la station 7 ---\n");
+    simuler_trame_station(&reseau, idx_src, idx_dest);
+
+    printf("\n---Envoie d'une 2ème tram de la station 14 vers la station 7 ---\n");
     simuler_trame_station(&reseau, idx_src, idx_dest);
 
     
