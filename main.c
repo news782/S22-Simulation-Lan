@@ -104,7 +104,7 @@ void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
     printf("La trame arrive à la station destination !\n");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     // Exemple de station
     station_t s1 = {
         .mac = {{0x54, 0xd6, 0xa6, 0x82, 0xc5, 0x23}},
