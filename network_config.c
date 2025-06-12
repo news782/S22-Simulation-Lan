@@ -86,29 +86,34 @@ int charger_reseau(const char *filename, reseau_t *reseau) {
         reseau->liens[i].equip2 = e2;
         reseau->liens[i].poids = poids;
     }
-    // Pour chaque switch, on initialise le nombre de ports à 0
+    // Initialisation des tables de voisins pour chaque switch
     for (int i = 0; i < reseau->nb_equipements; i++) {
         if (reseau->equipements[i].type == SWITCH) {
             reseau->equipements[i].data.sw.nb_ports = 0;
         }
     }
-    // On remplit les tables de voisins pour chaque switch
-    for (int i = 0; i < nb_liens; i++) {
+    for (int i = 0; i < reseau->nb_liens; i++) {
         int e1 = reseau->liens[i].equip1;
         int e2 = reseau->liens[i].equip2;
 
-        // Si e1 est un switch, on ajoute e2 comme voisin
+        // Pour e1
         if (reseau->equipements[e1].type == SWITCH) {
             switch_t *sw1 = &reseau->equipements[e1].data.sw;
             sw1->port_table[sw1->nb_ports] = e2;
-            sw1->port_etat[sw1->nb_ports] = 0; // on initialise à bloqué
+            if (reseau->equipements[e2].type == STATION)
+                sw1->port_etat[sw1->nb_ports] = 1; // Port vers station toujours actif
+            else
+                sw1->port_etat[sw1->nb_ports] = 0; // Port vers switch, déterminé par STP
             sw1->nb_ports++;
         }
-        // Si e2 est un switch, on ajoute e1 comme voisin
+        // Pour e2
         if (reseau->equipements[e2].type == SWITCH) {
             switch_t *sw2 = &reseau->equipements[e2].data.sw;
             sw2->port_table[sw2->nb_ports] = e1;
-            sw2->port_etat[sw2->nb_ports] = 0; // on initialise à bloqué
+            if (reseau->equipements[e1].type == STATION)
+                sw2->port_etat[sw2->nb_ports] = 1; // Port vers station toujours actif
+            else
+                sw2->port_etat[sw2->nb_ports] = 0; // Port vers switch, déterminé par STP
             sw2->nb_ports++;
         }
     }
