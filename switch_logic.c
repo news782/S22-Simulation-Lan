@@ -1,7 +1,7 @@
 #include "switch_logic.h"
 #include <string.h>
+#include <stdio.h>
 
-// Ajoute ou met à jour l'association MAC->port dans la table du switch
 int switch_apprendre_mac(switch_t *sw, mac_addr_t mac_src, int port) {
     for (int i = 0; i < sw->mac_table_size; i++) {
         if (memcmp(sw->mac_table[i].addr, mac_src.addr, MAC_ADDR_LEN) == 0) {
@@ -18,7 +18,6 @@ int switch_apprendre_mac(switch_t *sw, mac_addr_t mac_src, int port) {
     return -1; // table pleine
 }
 
-// Cherche le port associé à la MAC de destination (ou -1 si inconnu)
 int switch_rechercher_port(switch_t *sw, mac_addr_t mac_dest) {
     for (int i = 0; i < sw->mac_table_size; i++) {
         if (memcmp(sw->mac_table[i].addr, mac_dest.addr, MAC_ADDR_LEN) == 0) {
@@ -26,4 +25,16 @@ int switch_rechercher_port(switch_t *sw, mac_addr_t mac_dest) {
         }
     }
     return -1;
+}
+
+void afficher_table_mac(switch_t *sw) {
+    printf("Table MAC du switch :\n");
+    for (int i = 0; i < sw->mac_table_size; i++) {
+        printf("  Port %d : ", sw->port_table[i]);
+        for (int j = 0; j < MAC_ADDR_LEN; j++) {
+            printf("%02x", sw->mac_table[i].addr[j]);
+            if (j < MAC_ADDR_LEN-1) printf(":");
+        }
+        printf("\n");
+    }
 }
