@@ -144,10 +144,14 @@ void stp_calculer_spanning_tree(reseau_t *reseau) {
     }
 }
 
-// Affiche l'état des ports pour chaque switch
+//Affiche l'état des ports de chaque switch dans le réseau et du root du spanning tree
 void stp_afficher_etat_ports(reseau_t *reseau) {
     int i, j;
-    printf("\n=== État des ports (1 = actif, 0 = bloqué) ===\n");
+    int root = stp_trouver_root(reseau);
+    printf("\n=== Spanning Tree Protocol ===\n");
+    printf("Root du spanning tree : Switch %d\n", root);
+
+    printf("=== État des ports (1 = actif, 0 = bloqué) ===\n");
     for (i = 0; i < reseau->nb_equipements; i++) {
         if (reseau->equipements[i].type == SWITCH) {
             printf("Switch %d :\n", i);
