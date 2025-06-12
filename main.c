@@ -16,7 +16,6 @@ int trouver_station_par_ip(reseau_t *reseau, ip_addr_t ip) {
     return -1;
 }
 
-// Propagation de la trame : DFS avec MAC learning correct
 int propager_trame(reseau_t *reseau, int courant, int precedent, 
                    const ethernet_frame_t *trame, int dest_station, int *trouve, int profondeur) {
     if (profondeur > reseau->nb_equipements) return 0;
@@ -32,7 +31,12 @@ int propager_trame(reseau_t *reseau, int courant, int precedent,
     if (eq->type == SWITCH) {
         switch_t *sw = &eq->data.sw;
         // Apprentissage MAC source: associer la MAC source au voisin d'arrivée (equip precedent)
-        if (precedent != -1) switch_apprendre_mac(sw, trame->src, precedent);
+        if (precedent != -1) {
+            printf("Switch %d apprend MAC source : ", courant);
+            afficher_mac(trame->src);
+            printf(" sur port (voisin) %d\n", precedent);
+            switch_apprendre_mac(sw, trame->src, precedent);
+        }
 
         int port_equip = switch_rechercher_port(sw, trame->dest);
         if (port_equip != -1 && port_equip != precedent) {
@@ -91,18 +95,30 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // ... affichage réseau ...
-
     // Simulation trame
     int idx_src = 14; // station source
     int idx_dest = 7; // station destination
-    simuler_trame_station(&reseau, idx_src, idx_dest);
+
+    // 1ère simulation : apprentissage
     simuler_trame_station(&reseau, idx_src, idx_dest);
 
-    // Affichage table MAC de tous les switches
+    // Affichage table MAC de tous les switches après la 1ère simulation
+    printf("\n=== TABLES MAC APRÈS 1ère TRAME ===\n");
     for (int i = 0; i < reseau.nb_equipements; i++) {
         if (reseau.equipements[i].type == SWITCH) {
-            printf("\nSwitch %d : ", i);
+            printf("\nSwitch %d :\n", i);
+            afficher_table_mac(&reseau.equipements[i].data.sw);
+        }
+    }
+
+    // 2ème simulation : doit utiliser l'apprentissage (plus d'inondation si MAC connue)
+    simuler_trame_station(&reseau, idx_src, idx_dest);
+
+    // Affichage table MAC de tous les switches après la 2ème simulation
+    printf("\n=== TABLES MAC APRÈS 2ème TRAME ===\n");
+    for (int i = 0; i < reseau.nb_equipements; i++) {
+        if (reseau.equipements[i].type == SWITCH) {
+            printf("\nSwitch %d :\n", i);
             afficher_table_mac(&reseau.equipements[i].data.sw);
         }
     }
