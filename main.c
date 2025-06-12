@@ -114,30 +114,20 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    int idx_src = 14; // station source
-    int idx_dest = 7; // station destination
+    // 1. Trame station14 -> station7 (apprend la MAC de station14)
+    simuler_trame_station(&reseau, 14, 7);
 
-    // 1ère simulation : apprentissage
-    simuler_trame_station(&reseau, idx_src, idx_dest);
+    // 2. Trame station7 -> station14 (apprend la MAC de station7)
+    simuler_trame_station(&reseau, 7, 14);
 
-    // Affichage table MAC de tous les switches après la 1ère simulation
-    printf("\n=== TABLES MAC APRÈS 1ère TRAME ===\n");
+    // 3. Trame station14 -> station7 (maintenant, plus d’inondation si tout est correct)
+    simuler_trame_station(&reseau, 14, 7);
+
+    // Affiche la table MAC de chaque switch
     for (int i = 0; i < reseau.nb_equipements; i++) {
         if (reseau.equipements[i].type == SWITCH) {
-            printf("\nSwitch %d :\n", i);
+            printf("\nSwitch %d :\n", i);
             afficher_table_mac(&reseau.equipements[i].data.sw);
         }
     }
-
-    // 2ème simulation : doit utiliser l'apprentissage (plus d'inondation si MAC connue)
-    simuler_trame_station(&reseau, idx_src, idx_dest);
-
-    printf("\n=== TABLES MAC APRÈS 2ème TRAME ===\n");
-    for (int i = 0; i < reseau.nb_equipements; i++) {
-        if (reseau.equipements[i].type == SWITCH) {
-            printf("\nSwitch %d :\n", i);
-            afficher_table_mac(&reseau.equipements[i].data.sw);
-        }
-    }
-    return 0;
 }
