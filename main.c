@@ -16,8 +16,14 @@ int trouver_station_par_ip(reseau_t *reseau, ip_addr_t ip) {
     return -1;
 }
 
-int propager_trame(reseau_t *reseau, int courant, int precedent, 
-                   const ethernet_frame_t *trame, int dest_station, int *trouve, int profondeur) {
+int propager_trame(
+    reseau_t *reseau,
+    int courant, int precedent, 
+    const ethernet_frame_t *trame,
+    int dest_station,
+    int *trouve,
+    int profondeur
+) {
     if (profondeur > reseau->nb_equipements) return 0;
     if (*trouve) return 1;
 
@@ -30,7 +36,7 @@ int propager_trame(reseau_t *reseau, int courant, int precedent,
     equipement_t *eq = &reseau->equipements[courant];
     if (eq->type == SWITCH) {
         switch_t *sw = &eq->data.sw;
-        // Apprentissage MAC source: associer la MAC source au voisin d'arrivée (equip precedent)
+        // Apprentissage MAC source : associer la MAC source au voisin d’arrivée (equip precedent)
         if (precedent != -1) {
             printf("Switch %d apprend MAC source : ", courant);
             afficher_mac(trame->src);

@@ -31,10 +31,7 @@ void afficher_table_mac(switch_t *sw) {
     printf("Table MAC du switch :\n");
     for (int i = 0; i < sw->mac_table_size; i++) {
         printf("  Port %d : ", sw->port_table[i]);
-        for (int j = 0; j < MAC_ADDR_LEN; j++) {
-            printf("%02x", sw->mac_table[i].addr[j]);
-            if (j < MAC_ADDR_LEN-1) printf(":");
-        }
+        afficher_mac(sw->mac_table[i]);
         printf("\n");
     }
 }

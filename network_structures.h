@@ -26,8 +26,9 @@ typedef struct {
     mac_addr_t mac;
     int nb_ports;
     int priority;
+    // Table d’association MAC -> index de l’équipement voisin dans le graphe
     mac_addr_t mac_table[MAX_PORTS];
-    int port_table[MAX_PORTS];
+    int port_table[MAX_PORTS]; // contient l’index de l’équipement voisin
     int mac_table_size;
 } switch_t;
 
