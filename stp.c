@@ -152,7 +152,7 @@ void stp_afficher_etat_ports(reseau_t *reseau) {
         if (reseau->equipements[i].type == SWITCH) {
             printf("Switch %d :\n", i);
             switch_t *sw = &reseau->equipements[i].data.sw;
-            for (j = 0; j < sw->mac_table_size; j++) {
+            for (j = 0; j < sw->nb_ports; j++) {
                 printf("  Port vers %d : %d\n", sw->port_table[j], sw->port_etat[j]);
             }
         }
