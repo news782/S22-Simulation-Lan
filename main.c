@@ -86,6 +86,7 @@ void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
     ethernet_frame_t trame;
     creer_trame_ethernet(&trame, src.mac, dest.mac, 0x0800, data, sizeof(data));
     afficher_trame_utilisateur(&trame);
+    printf("\n");
 
     int trouve = 0;
     int visited[NB_MAX_EQUIPEMENTS] = {0};
@@ -104,7 +105,7 @@ void simuler_trame_station(reseau_t *reseau, int idx_src, int idx_dest) {
 }
 
 int main(int argc, char *argv[]) {
-     if (argc < 2) {
+    if (argc < 2) {
         printf("Usage: %s <fichier_config>\n", argv[0]);
         return 1;
     }
@@ -116,28 +117,89 @@ int main(int argc, char *argv[]) {
 
     // Calcul du spanning tree avant de lancer la simulation
     stp_calculer_spanning_tree(&reseau);
-    stp_afficher_etat_ports(&reseau);
+    
 
-    int idx_src = 14; // station source
-    int idx_dest = 7; // station destination
+    int bool = 1;
 
-    simuler_trame_station(&reseau, idx_src, idx_dest);
-    printf("\n=== TABLES MAC APRÈS 1ère TRAME ===\n");
-    int i;
-    for (i = 0; i < reseau.nb_equipements; i++) {
-        if (reseau.equipements[i].type == SWITCH) {
-            printf("\nSwitch %d :\n", i);
-            afficher_table_mac(&reseau.equipements[i].data.sw);
+    while(bool)
+    {
+        printf("\n1) Afficher réseaux\n");
+        printf("2) Afficher tables de commutations\n");
+        printf("3) Envoyer une trame\n");
+        printf("4) Afficher état STP\n");
+        printf("5) Quitter\n");
+
+        int choix; 
+        printf("\nVotre choix : ");
+        scanf("%d", &choix);
+
+
+        if(choix == 5)
+        {
+            return 0;
+        }
+
+        else if(choix == 4)
+        {
+            stp_afficher_etat_ports(&reseau);
+        }
+
+        else if(choix == 3)
+        {
+            printf("\nNuméro de la station source : ");
+            int stSrc;
+            scanf("%d", &stSrc);
+
+            printf("Numéro de la station destination : ");
+            int stDest;
+            scanf("%d", &stDest);
+
+            simuler_trame_station(&reseau, stSrc, stDest);
+
+        }
+
+        else if(choix == 2)
+        {
+            printf("De quel switch voulez-vous voir la table ? : ");
+            int choix;
+
+            scanf("%d", &choix);
+
+            if(reseau.equipements[choix].type == SWITCH)
+            {
+                printf("\n\n%d) ", choix);
+                afficher_table_mac(&reseau.equipements[choix].data.sw); 
+                printf("\n");
+            }
+
+            else
+            {
+                printf("Ce numéro d'équipement n'est pas un switch ou n'existe pas !\n");
+            }
+        }
+
+        else if(choix == 1)
+        {
+            printf("Equipements du réseau :\n");
+            for (int i = 0; i < reseau.nb_equipements; i++) {
+                printf("%d. ", i);
+                afficher_equipement(reseau.equipements[i]);
+            }
+
+            printf("\nLiens du réseau :\n");
+            for (int i = 0; i < reseau.nb_liens; i++) {
+                printf("Lien %d : %d <--> %d (poids %d)\n",
+                    i, reseau.liens[i].equip1, reseau.liens[i].equip2, reseau.liens[i].poids);
+            }
+
+            printf("\n\n");
+        }
+
+        else
+        {
+            printf("Veuillez selectionner un des menus !\n");
         }
     }
-    simuler_trame_station(&reseau, idx_dest, idx_src);
-    printf("\n=== TABLES MAC APRÈS 2ème TRAME ===\n");
-    for (i = 0; i < reseau.nb_equipements; i++) {
-        if (reseau.equipements[i].type == SWITCH) {
-            printf("\nSwitch %d :\n", i);
-            afficher_table_mac(&reseau.equipements[i].data.sw);
-        }
-    }
-    simuler_trame_station(&reseau, idx_src, idx_dest);
+    
     return 0;
 }
