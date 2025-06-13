@@ -32,14 +32,16 @@ int propager_trame(
     int *visited
 ) {
     if (profondeur > reseau->nb_equipements) return 0;
-    if (*trouve) return 1;
     if (visited[courant]) return 0;
     visited[courant] = 1;
 
     if (courant == dest_station) {
-        printf("La trame arrive à la station destination (%d) !\n", courant);
-        *trouve = 1;
-        return 1;
+        if (!*trouve) {
+            printf("La trame arrive à la station destination (%d) !\n", courant);
+            *trouve = 1;
+        }
+        // On continue la propagation pour simuler l'inondation complète
+        return 1; // (optionnel, tu peux aussi retourner 0, mais on marque qu'on l'a trouvée)
     }
 
     equipement_t *eq = &reseau->equipements[courant];
@@ -57,18 +59,17 @@ int propager_trame(
 
         int port_equip = switch_rechercher_port(sw, trame->dest);
         if (port_equip != -1 && port_equip != precedent) {
-            printf("Switch %d : MAC destination connue, envoie vers équipement %d\n", courant, port_equip);
+            printf("Switch %d : MAC destination connue, envoie vers équipement %d\n", courant, port_equip);
             propager_trame(reseau, port_equip, courant, trame, dest_station, trouve, profondeur+1, visited);
-            return 1;
+            // Pas de return ici : on veut aussi continuer l'inondation
         } else {
-            printf("Switch %d : MAC destination inconnue, inonde tous les ports\n", courant);
+            printf("Switch %d : MAC destination inconnue, inonde tous les ports\n", courant);
             int i;
             for (i = 0; i < reseau->nb_liens; i++) {
                 int e1 = reseau->liens[i].equip1, e2 = reseau->liens[i].equip2;
                 int voisin = (e1 == courant) ? e2 : (e2 == courant ? e1 : -1);
                 if (voisin != -1 && voisin != precedent) {
                     propager_trame(reseau, voisin, courant, trame, dest_station, trouve, profondeur+1, visited);
-                    if (*trouve) return 1;
                 }
             }
         }
