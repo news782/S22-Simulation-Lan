@@ -5,31 +5,31 @@
 
 Développer une application en C simulant le fonctionnement d’un réseau Ethernet, incluant la commutation, l’apprentissage MAC et la prévention des boucles via le protocole Spanning Tree Protocol (STP).
 
-**✨ Fonctionnalités Implémentées**
+## ✨ Fonctionnalités Implémentées
 
-**🔌 Lecture de Topologie (`.lan`)**
+### 🔌 Lecture de Topologie (`.lan`)
 - Chargement des stations, switches et liens depuis un fichier texte.
 - Interprétation automatique de la structure réseau.
 
-** 🗺️ Affichage de la Topologie **
+### 🗺️ Affichage de la Topologie
 - Visualisation des équipements du réseau.
 - Affichage des interconnexions entre les éléments.
 
-**📡 Simulation de Trames Ethernet **
+### 📡 Simulation de Trames Ethernet
 - Création de trames réalistes (preambule, adresses MAC, type, données, FCS).
 - Circulation complète d'une trame de bout en bout.
 
-** 🔁 Switch avec Table MAC Dynamique **
+### 🔁 Switch avec Table MAC Dynamique
 - Apprentissage automatique des adresses MAC.
 - Commutation ciblée vers le port approprié.
 - Inondation lorsque la MAC de destination est inconnue.
 
-** 🌳 Implémentation du Spanning Tree Protocol (STP) **
+### 🌳 Implémentation du Spanning Tree Protocol (STP)
 - Élection du switch root.
 - Gestion des ports : actifs / bloqués.
 - Suppression automatique des boucles réseau.
 
-** 📊 Affichage Avancé **
+### 📊 Affichage Avancé
 - État détaillé des ports de chaque switch.
 - Affichage du root du Spanning Tree.
 - Visualisation du parcours de la trame dans le réseau.
@@ -42,6 +42,8 @@ Développer une application en C simulant le fonctionnement d’un réseau Ether
 - **Langage :** C (GCC)  
 - **Compilation :** Makefile inclus  
 - **Plateforme :** Linux / WSL / macOS  
+
+---
 
 ## 🚀 Compilation
 Pour exécuter la simulation sur votre machine :
@@ -107,5 +109,6 @@ Caubert Martin
 📧 Contact: cartinmaubert@gmail.com
 
 ---
+
 
 
