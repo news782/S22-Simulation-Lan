@@ -1,25 +1,34 @@
-# SAE Réseaux – Simulation de Commutation Ethernet & Spanning Tree Protocol
+# 📂 SAE Réseaux – Simulation de Commutation Ethernet & Spanning Tree Protocol
 
-## Objectif
+## 🌟 Aperçu du Projet
+**Objectif :**
 
-Ce projet simule un réseau local Ethernet comprenant :
-- La lecture d’une topologie de réseau à partir d’un fichier `.lan`
-- La création et l’affichage de trames Ethernet réalistes
-- La commutation de trames par les switches avec table d’apprentissage MAC
-- La gestion automatique des boucles réseau avec le protocole Spanning Tree Protocol (STP)
+Développer une application en C simulant le fonctionnement d’un réseau Ethernet, incluant la commutation, l’apprentissage MAC et la prévention des boucles via le protocole Spanning Tree Protocol (STP).
 
-## Fonctionnalités principales
+**Fonctionnalités principales:**
+-Lecture de topologie (.lan) : Chargement des stations, switches et liens depuis un fichier texte.
+-Affichage de la topologie : Visualisation des équipements du réseau et de leurs interconnexions.
+-Simulation de trames Ethernet :
+--Création de trames réalistes (preambule, adresses, type, données, FCS)
+--Circulation complète d'une trame de bout en bout
+-Switch avec table MAC dynamique :
+--Apprentissage automatique des adresses
+--Commutation ciblée
+--Inondation en cas de MAC inconnue
+-Implémentation du Spanning Tree Protocol (STP) :
+--Élection du switch root
+--Gestion des ports (actifs/bloqués)
+--Élimination automatique des boucles
+-Affichage avancé :
+--État des ports des switches
+--Root du Spanning Tree
 
-- Chargement dynamique d’un réseau (stations, switches, liens) depuis un fichier texte
-- Affichage de la topologie, des équipements et des liens
-- Simulation de la circulation d’une trame Ethernet dans le réseau
-- Table de commutation MAC dynamique pour chaque switch (apprentissage automatique)
-- Détection et suppression automatique des boucles via un algorithme STP (élection du root, ports bloqués/désignés)
-- Affichage de l’état des ports de chaque switch (actif/bloqué) et du root du spanning tree
+## 🚀 Compilation
+Pour exécuter la simulation sur votre machine :
 
-## Compilation
-
-Assurez-vous d’avoir `gcc` installé.
+**Prérequis**
+-gcc installé
+-make installé
 
 ```sh
 make
@@ -30,7 +39,7 @@ Pour nettoyer :
 make clean
 ```
 
-## Lancer la simulation
+**Lancer la simulation**
 
 ```sh
 ./simulateur_reseau <nom_du_fichier.lan>
@@ -41,7 +50,7 @@ Exemple :
 ./simulateur_reseau mylan.lan
 ```
 
-## Structure d’un fichier `.lan`
+## 📄 Structure d’un fichier `.lan`
 
 - La première ligne indique le nombre d’équipements et de liens
 - Les lignes suivantes décrivent chaque équipement (switch ou station)
@@ -56,33 +65,7 @@ Exemple :
 ...
 ```
 
-## Auteurs
-
-CAUBERT Martin - KLAUSNITZER Jules
-
----
-
-## Consignes de la SAE
-
-- Respecter la structure et le fonctionnement des trames Ethernet (preambule, adresses MAC, type, données, FCS)
-- Implémenter un switch “intelligent” avec apprentissage MAC (commutation + inondation si MAC inconnue)
-- Simuler le fonctionnement du Spanning Tree Protocol pour garantir l’absence de boucle dans le réseau
-- Afficher clairement :
-    - Les états des ports de chaque switch (bloqué/actif)
-    - Le root du spanning tree
-    - La circulation des trames dans le réseau
-
----
-
-## Bonus possibles
-
-- Simulation plus réaliste du STP (BPDU, convergence progressive…)
-- Prise en compte des poids de liens (STP pondéré)
-- Interface graphique ou visualisation
-
----
-
-## Fichiers principaux
+## 📄 Fichiers principaux
 
 - `main.c` : point d’entrée, gestion de la simulation
 - `network_structures.c/h` : structures de données réseau
@@ -91,5 +74,16 @@ CAUBERT Martin - KLAUSNITZER Jules
 - `ethernet_frame.c/h` : gestion des trames Ethernet
 - `switch_logic.c/h` : logique de commutation
 - `stp.c/h` : algorithme spanning tree
+
+
+---
+
+##🧑‍💻 Auteurs
+
+Klausnitzer Jules
+📧 Contact: julot424@gmail.com
+
+Caubert Martin
+📧 Contact: cartinmaubert@gmail.com
 
 ---
